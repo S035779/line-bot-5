@@ -19,7 +19,7 @@ db.openUri(process.env.MDB_NAME, {
     useNewUrlParser: true,
     user: process.env.MDB_USER,
     pass: process.env.MDB_PASS, 
-    dbName: 'feed',
+    dbName: "feed",
     sslValidate: false,
     sslCA: fs.readFileSync(process.env.MDB_CA),
     sslKey: fs.readFileSync(process.env.MDB_KEY),
@@ -39,10 +39,10 @@ const noticeSchema = new mongoose.Schema({
   accessTokenSecret: String,
   created: { type: Date, required: true, default: Date.now },
   updated: { type: Date, required: true, default: 0 },
-}, {collection: 'notices'});
+}, { collection: "notices" });
 noticeSchema.index({ user: 1, category: 1, noticeId: 1 });
 
-const Notice = db.model('Notice', noticeSchema);
+const Notice = db.model("Notice", noticeSchema);
 
 function main(notice) {
   const config = { channelAccessToken: notice.accessTokenKey, channelSecret: notice.accessTokenSecret };
