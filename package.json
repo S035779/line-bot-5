@@ -1,0 +1,24 @@
+{
+  "name": "line-bot-5",
+  "version": "1.0.0",
+  "engint": {
+    "node": ">=19.0 <20.0",
+    "npm": "~8.19.2"
+  },
+  "description": "line-bot-5",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node -r dotenv/config index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@line/bot-sdk": "^7.5.2",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^5.13.15",
+    "save": "^2.9.0"
+  }
+}
