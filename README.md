@@ -35,7 +35,7 @@ $ ngrok http 3000
 ## 4. Run line-bot-5 app.
 
 ```
-$ npm run web
+$ npm run dev
 ```
 
 ## 5. Set webhook url
