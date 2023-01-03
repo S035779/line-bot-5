@@ -4,7 +4,45 @@
 
 ```
 $ npm init --yes
+$ npm install -g nodemon
 $ npm install --save express @line/bot-sdk dotenv mongoose
+$ npm install --save-dev eslint
+$ npm init @eslint/config
+```
+
+```json:package.json
+  :
+  "engint": {
+    "node": ">=19.0 <20.0",
+    "npm": "~8.19.2"
+  },
+  :
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node -r dotenv/config index.js",
+    "dev": "nodemon -r dotenv/config index.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix"
+  },
+  :
+```
+
+```json:.eslintrc.json
+{
+    "env": {
+        "node": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+    }
+}
 ```
 
 ## 2. Push source

@@ -9,7 +9,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node -r dotenv/config index.js"
+    "start": "node -r dotenv/config index.js",
+    "dev": "nodemon -r dotenv/config index.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +23,8 @@
     "express": "^4.18.2",
     "mongoose": "^5.13.15",
     "save": "^2.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.31.0"
   }
 }
