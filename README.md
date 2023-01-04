@@ -5,7 +5,7 @@
 ```
 $ npm init --yes
 $ npm install -g nodemon
-$ npm install --save express @line/bot-sdk dotenv mongoose
+$ npm install --save express @line/bot-sdk dotenv mongoose log4js express-cluster
 $ npm install --save-dev eslint
 $ npm init @eslint/config
 ```
