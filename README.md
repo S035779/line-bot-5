@@ -81,7 +81,7 @@ $ npm run dev
 Webhook URL: https://a05f-61-25-23-68.ngrok.io/bot/webhook
 
 ```
-{ destination: 'U13776ebf32be5eee178f5ef84786eb6b', events: [] }
+{ destination: 'U********************************', events: [] }
 ```
 
 ## 6. Reply static message.
