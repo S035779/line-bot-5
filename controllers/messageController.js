@@ -6,7 +6,7 @@ exports.index = async (req, res) => {
   log.debug("This is in the message module");
   try {
     const client = await utils.getLineClient(line);
-    const result = await utils.pushMessage(client, req.params.uid);
+    const result = await utils.userMessage(client, req.params.uid);
     res.json(result);
   } catch (err) {
     log.error("Push message error: ", err);

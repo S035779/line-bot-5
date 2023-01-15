@@ -1,10 +1,50 @@
 const Notice = require("../models/notice");
+const { User, Group } = require("../models/account");
 
 function fetchNotice(category, noticeId) {
   return Notice.findOne()
     .where("category").equals(category)
     .where("noticeId").equals(noticeId)
-    .select("accessTokenKey accessTokenSecret");
+    .select("accessTokenKey accessTokenSecret")
+    .exec();
+}
+
+function fetchUser(username) {
+  return User.findOne()
+    .where("username").equals(username)
+    .select("userId")
+    .exec();
+}
+
+function upsertUser({ userId, username, timestamp }) {
+  const filter = { userId };
+  const update = { username, timestamp, type: "line" };
+  const option = { upsert: true };
+  return User.findOneAndUpdate(filter, update, option).exec();
+}
+
+function deleteUser({ userId }) {
+  const conditions = { userId };
+  return User.findOneAndDelete(conditions).exec();
+}
+
+function fetchGroup(groupname) {
+  return Group.findOne()
+    .where("groupname").equals(groupname)
+    .select("groupId")
+    .exec();
+}
+
+function upsertGroup({ groupId, groupname, timestamp }) {
+  const filter = { groupId };
+  const update = { groupname, timestamp, type: "line" };
+  const option = { upsert: true };
+  return Group.findOneAndUpdate(filter, update, option).exec();
+}
+
+function deleteGroup({ groupId }) {
+  const conditions = { groupId };
+  return Group.findOneAndDelete(conditions).exec();
 }
 
 function getLineClient(line) {
@@ -33,14 +73,26 @@ function broadcastMessage(client) {
   return client.broadcast(message);
 }
 
-function pushMessage(client,  userId) {
+function userMessage(client, username) {
   const message = { type: "text", text: "プッシュメッセージです！"}
-  return client.pushMessage(userId, message);
+  return fetchUser(username).then(userId => client.pushMessage(userId, message));
 }
 
-function followMessage(client, token, username) {
-  const message = { type: "text", text: `${username}さん、こんにちは！` };
-  return client.replyMessage(token, message);
+function groupMessage(client, groupname) {
+  const message = { type: "text", text: "プッシュメッセージです！"}
+  return fetchGroup(groupname).then(groupId => client.pushMessage(groupId, message));
+}
+
+function followMessage(client, token, user) {
+  const message = { type: "text", text: `${user.username}さん、こんにちは！` };
+  return upsertUser(user)
+    .then(() => client.replyMessage(token, message));
+}
+
+function unfollowMessage(client, token, user) {
+  const message = { type: "text", text: `${user.username}さんは退室しました．` };
+  return deleteUser(user)
+    .then(() => client.replyMessage(token, message));
 }
 
 function sendMessage(client, token, echo) {
@@ -48,17 +100,27 @@ function sendMessage(client, token, echo) {
   return client.replyMessage(token, message);
 }
 
-function joinMessage(client, token, groupname) {
-  const message = { type: "text", text: `${groupname}へ、ようこそ！` };
-  return client.replyMessage(token, message);
+function joinMessage(client, token, group) {
+  const message = { type: "text", text: `${group.groupname}へ、ようこそ！` };
+  return upsertGroup(group)
+    .then(() => client.replyMessage(token, message));
+}
+
+function leaveMessage(client, token, group) {
+  const message = { type: "text", text: `${group.groupname}から退出しました．`}
+  return deleteGroup(group)
+    .then(() => client.replyMessage(token, message));
 }
 
 module.exports = {
   getLineClient,
   getLineMiddleware,
   broadcastMessage,
-  pushMessage,
+  userMessage,
+  groupMessage,
   followMessage,
+  unfollowMessage,
   sendMessage,
   joinMessage,
+  leaveMessage,
 };

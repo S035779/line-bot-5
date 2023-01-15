@@ -1,7 +1,7 @@
 {
   "name": "line-bot-5",
   "version": "1.0.0",
-  "engint": {
+  "engine": {
     "node": ">=19.0 <20.0",
     "npm": "~8.19.2"
   },
@@ -12,7 +12,8 @@
     "start": "node -r dotenv/config index.js",
     "dev": "nodemon -r dotenv/config index.js",
     "lint": "eslint . --ext .js",
-    "lint:fix": "eslint . --ext .js --fix"
+    "lint:fix": "eslint . --ext .js --fix",
+    "ngrok": "ngrok http 3000"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const mongoose = require("mongoose");
-const log = require("log4js").getLogger("notice");
+const log = require("log4js").getLogger("user");
 
 const options = {
   useFindAndModify: false,
@@ -9,7 +9,7 @@ const options = {
   useNewUrlParser: true,
   user: process.env.MDB_USER,
   pass: process.env.MDB_PASS, 
-  dbName: "feed",
+  dbName: "account",
   sslValidate: false,
   sslCA: fs.readFileSync(process.env.MDB_CA),
   sslKey: fs.readFileSync(process.env.MDB_KEY),
@@ -32,19 +32,28 @@ mongoose.connection
   .on("fullsetup", () => log.info("db fullsetup."))
   .on("all", () => log.info("all db connected."));
 
-const noticeSchema = new mongoose.Schema({
-  user: { type: String, required: true },
-  noticeId: { type: Number, required: true },
-  account: { type: String, required: true },
-  category: { type: String, required: true },
-  consumerKey: String,
-  consumerSecret: String,
-  accessTokenKey: String,
-  accessTokenSecret: String,
-  created: { type: Date, required: true, default: Date.now },
-  updated: { type: Date, required: true, default: 0 },
-}, { collection: "notices" });
+const userSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  type: { type: String, required: true },
+  username: String,
+  timestamp: String,
+}, { collection: "users" });
 
-noticeSchema.index({ user: 1, category: 1, noticeId: 1 });
+userSchema.index({ userId: 1 });
 
-module.exports = mongoose.model("Notice", noticeSchema);
+const groupSchema = new mongoose.Schema({
+  groupId: { type: String, required: true },
+  type: { type: String, required: true },
+  groupname: String,
+  timestamp: String,
+}, { collection: "groups"})
+
+groupSchema.index({ groupId: 1 });
+
+const User = mongoose.model("User", userSchema);
+const Group = mongoose.model("Group", groupSchema);
+
+module.exports = {
+  User,
+  Group,
+};
