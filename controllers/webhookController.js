@@ -2,31 +2,34 @@ const line = require("@line/bot-sdk");
 const utils = require("../utils");
 const log = require("log4js").getLogger("bot");
 
-function handleEvent(client, { type, source, message, replyToken, timestamp }) {
+function handleEvent(client, { replyToken, type, mode, timestamp, source, webhookEventId, deliveryContext, message }) {
   switch (type) {
     case "follow":
       if (source.type !== "user") break;
+      log.info(`${replyToken} ${type} ${mode} ${timestamp} ${source.type} ${source.userId} ${webhookEventId} ${deliveryContext.isRedelivery}`);
       return client.getProfile(source.userId)
         .then(profile => utils.followMessage(client, replyToken, { userId: source.userId, username: profile.displayName, timestamp }))
         .catch(err => log.error("Follow message error: ", err));
     case "unfollow":
       if (source.type !== "user") break;
-      return client.getProfile(source.userId)
-        .then(profile => utils.unfollowMessage(client, replyToken, { userId: source.userId, username: profile.displayName, timestamp }))
+      log.info(`${type} ${mode} ${timestamp} ${source.type} ${source.userId} ${webhookEventId} ${deliveryContext.isRedelivery}`);
+      return utils.unfollowAccount(client, { userId: source.userId, timestamp })
         .catch(err => log.error("Unfollow message error: ", err));
     case "message":
       if (message.type !== "text") break;
+      log.info(`${replyToken} ${type} ${mode} ${timestamp} ${source.type} ${source.userId} ${webhookEventId} ${deliveryContext.isRedelivery} ${message.text}`);
       return utils.sendMessage(client, replyToken, "これは、これは")
         .catch(err => log.error("Send message error: ", err));
     case "join":
       if (source.type !== "group") break;
+      log.info(`${replyToken} ${type} ${mode} ${timestamp} ${source.type} ${source.groupId} ${webhookEventId} ${deliveryContext.isRedelivery}`);
       return client.getGroupSummary(source.groupId)
         .then(summary => utils.joinMessage(client, replyToken, { groupId: source.groupId, groupname: summary.groupName, timestamp }))
         .catch(err => log.error("Join message error: ", err));
     case "leave":
       if (source.type !== "group") break;
-      return client.getGroupSummary(source.groupId)
-        .then(summary => utils.leaveMessage(client, replyToken, { groupId: source.groupId, groupname: summary.groupName, timestamp }))
+      log.info(`${type} ${mode} ${timestamp} ${source.type} ${source.groupId} ${webhookEventId} ${deliveryContext.isRedelivery}`);
+      return utils.leaveAccount({ groupId: source.groupId, timestamp })
         .catch(err => log.error("Leave message error: ", err));
   }
   return Promise.resolve(null);
@@ -34,7 +37,6 @@ function handleEvent(client, { type, source, message, replyToken, timestamp }) {
 
 exports.index = async (req, res) => {
   console.dir(req.body, { depth: 10, colors: true });
-  log.debug("This is in the webhook module");
   
   try {
     const client = await utils.getLineClient(line);

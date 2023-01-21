@@ -75,12 +75,14 @@ function broadcastMessage(client) {
 
 function userMessage(client, username) {
   const message = { type: "text", text: "プッシュメッセージです！"}
-  return fetchUser(username).then(userId => client.pushMessage(userId, message));
+  return fetchUser(username)
+    .then(userId => client.pushMessage(userId, message));
 }
 
 function groupMessage(client, groupname) {
   const message = { type: "text", text: "プッシュメッセージです！"}
-  return fetchGroup(groupname).then(groupId => client.pushMessage(groupId, message));
+  return fetchGroup(groupname)
+    .then(groupId => client.pushMessage(groupId, message));
 }
 
 function followMessage(client, token, user) {
@@ -89,10 +91,8 @@ function followMessage(client, token, user) {
     .then(() => client.replyMessage(token, message));
 }
 
-function unfollowMessage(client, token, user) {
-  const message = { type: "text", text: `${user.username}さんは退室しました．` };
-  return deleteUser(user)
-    .then(() => client.replyMessage(token, message));
+function unfollowAccount(user) {
+  return deleteUser(user);
 }
 
 function sendMessage(client, token, echo) {
@@ -106,10 +106,8 @@ function joinMessage(client, token, group) {
     .then(() => client.replyMessage(token, message));
 }
 
-function leaveMessage(client, token, group) {
-  const message = { type: "text", text: `${group.groupname}から退出しました．`}
-  return deleteGroup(group)
-    .then(() => client.replyMessage(token, message));
+function leaveAccount(group) {
+  return deleteGroup(group);
 }
 
 module.exports = {
@@ -119,8 +117,8 @@ module.exports = {
   userMessage,
   groupMessage,
   followMessage,
-  unfollowMessage,
+  unfollowAccount,
   sendMessage,
   joinMessage,
-  leaveMessage,
+  leaveAccount,
 };
