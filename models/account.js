@@ -46,6 +46,7 @@ const groupSchema = new mongoose.Schema({
   type: { type: String, required: true },
   groupname: String,
   timestamp: String,
+  members: [Object],
 }, { collection: "groups"})
 
 groupSchema.index({ groupId: 1 });
